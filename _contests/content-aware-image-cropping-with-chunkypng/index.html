@@ -1,0 +1,1184 @@
+<h1>Content-aware image cropping with ChunkyPNG</h1>
+
+Submitted by <a href="/users/jeffkreeftmeijer" name="Jeff Kreeftmeijer"><img alt="F03f4ce7b507aede386263d218228b6a.png?d=http%3a%2f%2fcodebrawl.com%2fassets%2favatar" class="gravatar" src="http://gravatar.com/avatar/f03f4ce7b507aede386263d218228b6a.png?d=http%3A%2F%2Fcodebrawl.com%2Fassets%2Favatar-85eba94d6b6a060828a4a495ee10de68.png&amp;amp;r=PG&amp;amp;s=20"> Jeff Kreeftmeijer</a>
+
+<p>Are you ready for another <a href="https://github.com/wvanbergen/chunky_png">ChunkyPNG</a> brawl? This week, the challenge is to build a cropping tool that knows which parts to cut off by looking at the contents of the image and deciding what the point of interest is.</p>
+
+<p>Here are the three images we’ll use. A <a href="http://f.cl.ly/items/2F092x0i070N2Y1U2q2n/cat.png">cat</a>, a <a href="http://f.cl.ly/items/2s2k2z2l0S1t0m321r2P/dog.png">dog</a> and some <a href="http://f.cl.ly/items/1c0L422l320W0z3c3L0g/duck.png">ducks</a>. You’ll have to crop all three of them and the resulting images should be 100 by 100 pixels. Your solution should use ChunkyPNG, but of course you can use additional gems if you think you’ll need them.</p>
+
+<p>How you solve this is entirely up to you, but solutions that need human input or are built only to support these images will get disqualified. Please be creative.</p>
+
+<p>When you’re done, throw your implementation, a <code>README</code> and all three resulting images (please don’t include the input images) in a <a href="https://gist.github.com">Gist</a>. You can’t add images in the Gist web interface, so you’ll have to clone your Gist and add your output image using plain git. If you don’t know how, just <a href="https://github.com/inbox/new/jeffkreeftmeijer">send me a message</a> and I’ll help you out.</p>
+
+<p>You have one week to get your entry in, but we’ll add more time if necessary. I can’t wait to see how you solve this one. Good luck!</p>
+
+<h2 id="prize">Prize</h2>
+<p>This week’s winner gets one month of free <a href="http://github.com">Github</a> Micro!</p>
+
+<div class="message">
+<h2>This contest is finished</h2>
+<p>
+Congratulations to this week's winners! The entries and the contestant names are shown below.
+</p>
+</div>
+<ul class="finished" id="entries">
+<li class="gold entry" id="entry_4ed164acb1e6540638000002">
+<div class="owner">
+<a href="/users/zaeleus" name="Michael Macias"><img alt="Ea0bcfe2dd504a26b3d1b29ee0a73f03.png?d=http%3a%2f%2fcodebrawl.com%2fassets%2favatar" class="gravatar" src="http://gravatar.com/avatar/ea0bcfe2dd504a26b3d1b29ee0a73f03.png?d=http%3A%2F%2Fcodebrawl.com%2Fassets%2Favatar-85eba94d6b6a060828a4a495ee10de68.png&amp;amp;r=PG&amp;amp;s=20"> Michael Macias</a>
+</div>
+<div class="files">
+<div class="filename">
+README.md
+</div>
+<div class="markup"><h1>Content-aware image cropping with ChunkyPNG</h1>
+
+<p><code>cake</code> (<strong>c</strong>ontent-<strong>a</strong>ware <strong>k</strong>ropping [sic] by <strong>e</strong>ntropy) is a
+greedy image cropper inspired by <a href="https://github.com/reddit/reddit/blob/a6a4da72a1a0f44e0174b2ad0a865b9f68d3c1cd/r2/r2/lib/scraper.py#L57-84">Reddit's scraper library</a>. It works
+by moving a sliding window over a given image that is continually
+reduced to the size of a specified crop width and height. Two copies of
+the current window boundary are made, and for each, 16px are cropped on
+opposite sides (left-right on the first pass and top-bottom on the
+second). <a href="http://www.mathworks.com/help/toolbox/images/ref/entropy.html">The entropies</a> of the cropped windows are compared, and the
+smaller of the two will be discarded, moving the window toward the
+larger.</p>
+
+<p>The current "smart" implementation takes the smaller dimension of the
+input image as the crop width and height. The optimal crop position is
+found, and the image is then scaled to 100x100 px.</p>
+
+<h2>Requirements</h2>
+
+<p>Make sure that you have <code>chunky_png</code> installed, and you're good to go.
+This has also only been tested on Ruby 1.9.3p0.</p>
+
+<h2>Usage</h2>
+
+<pre><code>Usage: cake.rb [options] &lt;input ...&gt;
+    -o, --output &lt;string&gt;            Specify output file
+    -s, --smart                      Selects the largest, optimal square to crop and rescales. Good for thumbnails.
+        --debug                      Draws the bounding crop area instead of cropping the image
+    -d &lt;integer&gt;x&lt;integer&gt;,          Specify output dimensions (width x height) in pixels
+        --dimensions
+</code></pre>
+
+<h2>Examples</h2>
+
+<pre><code>$ ruby cake.rb -s cat.png
+</code></pre>
+
+<p><a href="http://i.imgur.com/RQfnX.png">input</a> / <a href="http://i.imgur.com/54tgx.png">output</a></p>
+
+<pre><code>$ ruby cake.rb --debug -d 240x240 soundlab.png
+</code></pre>
+
+<p><a href="http://www.flickr.com/photos/photo_xtc/6407587599/">input</a> (medium 640) / <a href="http://i.imgur.com/dYE5x.png">output</a></p>
+
+<h2>Improvements</h2>
+
+<p>Because of the large number of colors in an image, it would probably be
+more ideal to do color quantization before processing.</p>
+</div>
+
+<div class="filename">
+duck_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/a54cd41137b678935c91/ca99f750ee28402bc4ecfbf5087682e2b529fb21/duck_cropped.png"></div>
+
+<div class="filename">
+dog_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/a54cd41137b678935c91/1437bd23a944be5bef90215f37954431dbda9bac/dog_cropped.png"></div>
+
+<div class="filename">
+cat_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/a54cd41137b678935c91/6eca58035f97069de123e21dd7a85858f5de3137/cat_cropped.png"></div>
+
+<div class="filename">
+cake.rb
+</div>
+<div class="highlight"><pre><span class="nb">require</span> <span class="s1">'chunky_png'</span>
+<span class="nb">require</span> <span class="s1">'optparse'</span>
+
+<span class="k">class</span> <span class="nc">Cake</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:debug</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+    <span class="vi">@image</span> <span class="o">=</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Image</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">crop_and_scale</span><span class="p">(</span><span class="n">new_width</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">new_height</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="vi">@image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="vi">@image</span><span class="o">.</span><span class="n">height</span>
+
+    <span class="k">if</span> <span class="n">width</span> <span class="o">&gt;</span> <span class="n">height</span>
+      <span class="n">width</span> <span class="o">=</span> <span class="n">height</span>
+    <span class="k">else</span>
+      <span class="n">height</span> <span class="o">=</span> <span class="n">width</span>
+    <span class="k">end</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="n">crop</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">resample_bilinear!</span><span class="p">(</span><span class="n">new_width</span><span class="p">,</span> <span class="n">new_height</span><span class="p">)</span> <span class="k">unless</span> <span class="n">debug</span>
+    <span class="n">result</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">crop</span><span class="p">(</span><span class="n">crop_width</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">crop_height</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="vi">@image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="vi">@image</span><span class="o">.</span><span class="n">height</span>
+    <span class="n">slice_length</span> <span class="o">=</span> <span class="mi">16</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">crop_width</span>
+      <span class="n">slice_width</span> <span class="o">=</span> <span class="o">[</span><span class="n">width</span> <span class="o">-</span> <span class="n">x</span> <span class="o">-</span> <span class="n">crop_width</span><span class="p">,</span> <span class="n">slice_length</span><span class="o">].</span><span class="n">min</span>
+
+      <span class="n">left</span> <span class="o">=</span> <span class="vi">@image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">slice_width</span><span class="p">,</span> <span class="vi">@image</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+      <span class="n">right</span> <span class="o">=</span> <span class="vi">@image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="n">slice_width</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">slice_width</span><span class="p">,</span> <span class="vi">@image</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="n">entropy</span><span class="p">(</span><span class="n">left</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">entropy</span><span class="p">(</span><span class="n">right</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="n">slice_width</span>
+      <span class="k">else</span>
+        <span class="n">width</span> <span class="o">-=</span> <span class="n">slice_width</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="n">height</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">crop_height</span>
+      <span class="n">slice_height</span> <span class="o">=</span> <span class="o">[</span><span class="n">height</span> <span class="o">-</span> <span class="n">y</span> <span class="o">-</span> <span class="n">crop_height</span><span class="p">,</span> <span class="n">slice_length</span><span class="o">].</span><span class="n">min</span>
+
+      <span class="n">top</span> <span class="o">=</span> <span class="vi">@image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="vi">@image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">slice_height</span><span class="p">)</span>
+      <span class="n">bottom</span> <span class="o">=</span> <span class="vi">@image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span> <span class="o">-</span> <span class="n">slice_height</span><span class="p">,</span> <span class="vi">@image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">slice_height</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="n">entropy</span><span class="p">(</span><span class="n">top</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">entropy</span><span class="p">(</span><span class="n">bottom</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">+=</span> <span class="n">slice_height</span>
+      <span class="k">else</span>
+        <span class="n">height</span> <span class="o">-=</span> <span class="n">slice_height</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="k">if</span> <span class="n">debug</span>
+      <span class="k">return</span> <span class="vi">@image</span><span class="o">.</span><span class="n">rect</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">crop_width</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">crop_height</span><span class="p">,</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">::</span><span class="no">WHITE</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="vi">@image</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">crop_width</span><span class="p">,</span> <span class="n">crop_height</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">histogram</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">hist</span> <span class="o">=</span> <span class="no">Hash</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+      <span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+        <span class="n">hist</span><span class="o">[</span><span class="n">image</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="n">hist</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://www.mathworks.com/help/toolbox/images/ref/entropy.html</span>
+  <span class="k">def</span> <span class="nf">entropy</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+    <span class="n">hist</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">grayscale</span><span class="p">)</span>
+    <span class="n">area</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">area</span><span class="o">.</span><span class="n">to_f</span>
+
+    <span class="o">-</span><span class="n">hist</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">e</span><span class="p">,</span> <span class="n">freq</span><span class="o">|</span>
+      <span class="nb">p</span> <span class="o">=</span> <span class="n">freq</span> <span class="o">/</span> <span class="n">area</span>
+      <span class="n">e</span> <span class="o">+</span> <span class="nb">p</span> <span class="o">*</span> <span class="no">Math</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="nb">p</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">options</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">:width</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span> <span class="ss">:height</span> <span class="o">=&gt;</span> <span class="mi">100</span> <span class="p">}</span>
+
+<span class="n">option_parser</span> <span class="o">=</span> <span class="no">OptionParser</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">opts</span><span class="o">|</span>
+  <span class="n">opts</span><span class="o">.</span><span class="n">banner</span> <span class="o">=</span> <span class="s2">"Usage: </span><span class="si">#{</span><span class="bp">__FILE__</span><span class="si">}</span><span class="s2"> [options] &lt;input ...&gt;"</span>
+
+  <span class="n">opts</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">'-o'</span><span class="p">,</span> <span class="s1">'--output &lt;string&gt;'</span><span class="p">,</span>
+          <span class="s1">'Specify output file'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">filename</span><span class="o">|</span>
+    <span class="n">options</span><span class="o">[</span><span class="ss">:output</span><span class="o">]</span> <span class="o">=</span> <span class="n">filename</span>
+  <span class="k">end</span>
+
+  <span class="n">opts</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">'-s'</span><span class="p">,</span> <span class="s1">'--smart'</span><span class="p">,</span>
+          <span class="s1">'Selects the largest, optimal square to crop and then resamples. Good for thumbnails.'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">options</span><span class="o">[</span><span class="ss">:smart</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="n">opts</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="s1">'--debug'</span><span class="p">,</span>
+          <span class="s1">'Draws the bounding crop area instead of cropping the image'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">options</span><span class="o">[</span><span class="ss">:debug</span><span class="o">]</span> <span class="o">=</span> <span class="kp">true</span>
+  <span class="k">end</span>
+
+  <span class="n">opts</span><span class="o">.</span><span class="n">on</span><span class="p">(</span><span class="s1">'-d'</span><span class="p">,</span> <span class="s1">'--dimensions &lt;integer&gt;x&lt;integer&gt;'</span><span class="p">,</span>
+          <span class="s1">'Specify output dimensions (width x height) in pixels'</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dim</span><span class="o">|</span>
+    <span class="n">options</span><span class="o">[</span><span class="ss">:width</span><span class="o">]</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:height</span><span class="o">]</span> <span class="o">=</span> <span class="n">dim</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'x'</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:to_i</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">option_parser</span><span class="o">.</span><span class="n">parse!</span>
+
+<span class="k">if</span> <span class="no">ARGV</span><span class="o">.</span><span class="n">empty?</span>
+  <span class="nb">puts</span> <span class="n">option_parser</span><span class="o">.</span><span class="n">help</span>
+  <span class="nb">exit</span> <span class="mi">1</span>
+<span class="k">end</span>
+
+<span class="no">ARGV</span><span class="o">.</span><span class="n">each_with_index</span> <span class="k">do</span> <span class="o">|</span><span class="n">file</span><span class="p">,</span> <span class="n">i</span><span class="o">|</span>
+  <span class="n">c</span> <span class="o">=</span> <span class="no">Cake</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+  <span class="n">c</span><span class="o">.</span><span class="n">debug</span> <span class="o">=</span> <span class="kp">true</span> <span class="k">if</span> <span class="n">options</span><span class="o">[</span><span class="ss">:debug</span><span class="o">]</span>
+
+  <span class="n">output</span> <span class="o">=</span> <span class="k">if</span> <span class="n">options</span><span class="o">[</span><span class="ss">:output</span><span class="o">]</span>
+             <span class="n">suffix</span> <span class="o">=</span> <span class="s2">"_</span><span class="si">#{</span><span class="n">i</span><span class="si">}</span><span class="s2">"</span> <span class="k">if</span> <span class="no">ARGV</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span>
+             <span class="s2">"</span><span class="si">#{</span><span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:output</span><span class="o">]</span><span class="p">,</span> <span class="s1">'.png'</span><span class="p">)</span><span class="si">}#{</span><span class="n">suffix</span><span class="si">}</span><span class="s2">.png"</span>
+           <span class="k">else</span>
+             <span class="s2">"</span><span class="si">#{</span><span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="s1">'.png'</span><span class="p">)</span><span class="si">}</span><span class="s2">_cropped.png"</span>
+           <span class="k">end</span>
+
+  <span class="k">if</span> <span class="n">options</span><span class="o">[</span><span class="ss">:smart</span><span class="o">]</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">crop_and_scale</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:width</span><span class="o">]</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:height</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+  <span class="k">else</span>
+    <span class="n">c</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">options</span><span class="o">[</span><span class="ss">:width</span><span class="o">]</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:height</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+<a class="extend">
+<span>
+View full entry
+</span>
+</a>
+</div>
+Finished in <strong>1st place</strong> with a final score of <strong>4.1/5</strong>. (View the <a href="https://gist.github.com/a54cd41137b678935c91">Gist</a>)
+
+<div class="comments" data-gist_id="a54cd41137b678935c91"></div>
+<form accept-charset="UTF-8" action="/contests/content-aware-image-cropping-with-chunkypng/entries/4ed164acb1e6540638000002/votes" class="new_vote" id="new_vote" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="5rURtGeXSNrcgwErapbQb6E5tEWqprS7CcU8qmaQ8cI="></div>
+<label for="vote_comment">Comment</label>
+<textarea cols="40" id="vote_comment" name="vote[comment]" rows="20"></textarea>
+<input name="commit" type="submit" value="Comment">
+</form>
+
+
+</li>
+<li class="silver entry" id="entry_4ed26754b1e65449d200002d">
+<div class="owner">
+<a href="/users/rogerbraun" name="rogerbraun"><img alt="14feff2744f06c094a27e58e40a1901a.png?d=http%3a%2f%2fcodebrawl.com%2fassets%2favatar" class="gravatar" src="http://gravatar.com/avatar/14feff2744f06c094a27e58e40a1901a.png?d=http%3A%2F%2Fcodebrawl.com%2Fassets%2Favatar-85eba94d6b6a060828a4a495ee10de68.png&amp;amp;r=PG&amp;amp;s=20"> rogerbraun</a>
+</div>
+<div class="files">
+<div class="filename">
+README.md
+</div>
+<div class="markup"><h1>Content-aware image cropping</h1>
+
+<h2>How to use</h2>
+
+<p>Syntax is as follows:</p>
+
+<p><code>ruby cropper.rb input output width height noise</code></p>
+
+<h2>How it works</h2>
+
+<p>The idea is to calculate the energy of each pixel (something like how important this pixel is for the whole image) and then crop the part that has the highes energy. </p>
+
+<p>The energy function in this case is edge detection via the Sobel operator. You can swap in any other energy function, as long as it returns a grayscale canvas.</p>
+
+<p>After getting the grayscale image, the total energy of each column and row are calculated. Then, it takes lines from the left or right (or top and bottom) of the image, depending on which has the smaller total energy. What is left is a high energy image.</p>
+
+<p>This works pretty good if there is one large edgy thing (like the cat or dog), but breaks down if there are a lot of small edges (like the dirt in the duck image). For this cases, the cacrop method takes an additional noise operator, which makes it ignore values below a certain threshold. All images have been generated with a noise value of 70.</p>
+
+<p>The three images are all very hard to crop to 100x100. You may want to try with 150x150, which gives much better results</p>
+</div>
+
+<div class="filename">
+duck_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/68f21591fe7d755d8c54/091edca82861556e0e1fb69aff0e46138681de67/duck_cropped.png"></div>
+
+<div class="filename">
+cat_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/68f21591fe7d755d8c54/b1887aecde7a690f9d6bde738b9da37ecf3f6965/cat_cropped.png"></div>
+
+<div class="filename">
+dog_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/68f21591fe7d755d8c54/b61ec1cdbe66cea59fe110b4adf52fe69901bd3f/dog_cropped.png"></div>
+
+<div class="filename">
+sobel.rb
+</div>
+<div class="highlight"><pre><span class="k">module</span> <span class="nn">EdgeDetection</span>
+  <span class="k">def</span> <span class="nf">edge_detection</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Image</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+    <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+      <span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+        <span class="n">x_edge</span> <span class="o">=</span> 
+          <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span>    <span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span> <span class="mi">1</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span>    <span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span> <span class="mi">1</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span>
+
+        <span class="n">y_edge</span> <span class="o">=</span> 
+          <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span>    <span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span><span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span> <span class="mi">1</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span> <span class="mi">2</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span>    <span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span> <span class="o">+</span>
+          <span class="p">(</span> <span class="mi">1</span> <span class="o">*</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale_teint</span><span class="p">(</span><span class="nb">self</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span><span class="o">]</span><span class="p">))</span>
+
+        <span class="n">edge</span> <span class="o">=</span> <span class="p">((</span><span class="n">x_edge</span><span class="o">.</span><span class="n">abs</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">y_edge</span><span class="o">.</span><span class="n">abs</span> <span class="o">/</span> <span class="mi">4</span><span class="p">))</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">res</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">grayscale</span><span class="p">(</span><span class="n">edge</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+    <span class="n">res</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+<div class="filename">
+cropper.rb
+</div>
+<div class="highlight"><pre><span class="nb">require</span> <span class="s2">"rubygems"</span>
+<span class="nb">require</span> <span class="s2">"chunky_png"</span>
+<span class="nb">require</span> <span class="s2">"pry"</span>
+<span class="n">require_relative</span> <span class="s2">"sobel"</span>
+<span class="n">require_relative</span> <span class="s2">"cacrop"</span>
+
+<span class="n">input</span> <span class="o">=</span> <span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+<span class="n">output</span> <span class="o">=</span> <span class="no">ARGV</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+<span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span> <span class="o">||</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">to_i</span>
+<span class="n">height</span> <span class="o">=</span> <span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="o">||</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">to_i</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">4</span><span class="o">]</span> <span class="o">||</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">to_i</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Image</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+<span class="n">image</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="no">EdgeDetection</span><span class="p">)</span>
+<span class="n">image</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="no">CACrop</span><span class="p">)</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">cacrop</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">noise</span>
+<span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</pre>
+</div>
+
+<div class="filename">
+cacrop.rb
+</div>
+<div class="highlight"><pre><span class="k">module</span> <span class="nn">CACrop</span>
+
+  <span class="c1"># This tries to crop the most energy dense parts of the image as determined</span>
+  <span class="c1"># by the Sobel operator.</span>
+  <span class="k">def</span> <span class="nf">cacrop</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">noise</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="c1"># Get the edge detected image</span>
+    <span class="n">edges</span> <span class="o">=</span> <span class="n">edge_detection</span>
+
+    <span class="c1"># This calculates arrays of the sums of each pixel in each row / column.</span>
+    <span class="c1"># This is a simple measure of the activity in each row / column</span>
+    <span class="n">columns</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">width</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">edges</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">{</span><span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="n">c</span><span class="p">)}</span><span class="o">.</span><span class="n">map</span><span class="p">{</span><span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">noise</span> <span class="p">?</span> <span class="n">c</span> <span class="p">:</span> <span class="mi">0</span><span class="p">}</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:+</span><span class="p">)}</span>
+    <span class="n">rows</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="n">self</span><span class="o">.</span><span class="n">height</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">{</span><span class="o">|</span><span class="n">i</span><span class="o">|</span> <span class="n">edges</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">{</span><span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">r</span><span class="p">(</span><span class="n">c</span><span class="p">)}</span><span class="o">.</span><span class="n">map</span><span class="p">{</span><span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">noise</span> <span class="p">?</span> <span class="n">c</span> <span class="p">:</span> <span class="mi">0</span> <span class="p">}</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:+</span><span class="p">)}</span> 
+    
+    
+    <span class="n">x</span> <span class="o">=</span> <span class="n">take_smallest_until</span> <span class="n">columns</span><span class="p">,</span> <span class="n">width</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">take_smallest_until</span> <span class="n">rows</span><span class="p">,</span> <span class="n">height</span>
+
+    <span class="n">crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+
+  <span class="k">end</span>
+
+  <span class="c1"># Takes the smalles value from the end or the beginning of the array.</span>
+  <span class="c1"># This continues until the size of the array is right.</span>
+  <span class="c1"># It returns the numbers of dropped values from the left.</span>
+  <span class="k">def</span> <span class="nf">take_smallest_until</span> <span class="n">arr</span><span class="p">,</span> <span class="n">goal</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="o">[]</span>
+    <span class="n">arr</span><span class="o">.</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">arr</span><span class="o">.</span><span class="n">last</span> <span class="p">?</span> <span class="n">res</span> <span class="o">&lt;&lt;</span> <span class="n">arr</span><span class="o">.</span><span class="n">shift</span> <span class="p">:</span> <span class="n">arr</span><span class="o">.</span><span class="n">pop</span> <span class="k">while</span> <span class="n">arr</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="n">goal</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">size</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+<a class="extend">
+<span>
+View full entry
+</span>
+</a>
+</div>
+Finished in <strong>2nd place</strong> with a final score of <strong>3.6/5</strong>. (View the <a href="https://gist.github.com/68f21591fe7d755d8c54">Gist</a>)
+
+<div class="comments" data-gist_id="68f21591fe7d755d8c54"></div>
+<form accept-charset="UTF-8" action="/contests/content-aware-image-cropping-with-chunkypng/entries/4ed26754b1e65449d200002d/votes" class="new_vote" id="new_vote" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="5rURtGeXSNrcgwErapbQb6E5tEWqprS7CcU8qmaQ8cI="></div>
+<label for="vote_comment">Comment</label>
+<textarea cols="40" id="vote_comment" name="vote[comment]" rows="20"></textarea>
+<input name="commit" type="submit" value="Comment">
+</form>
+
+
+</li>
+<li class="bronze entry" id="entry_4ed38780b1e6546cb60005c1">
+<div class="owner">
+<a href="/users/tony-brewerio" name="tony-brewerio"><img alt="1d0504d3372c21985c792fb28b4dab00.png?d=http%3a%2f%2fcodebrawl.com%2fassets%2favatar" class="gravatar" src="http://gravatar.com/avatar/1d0504d3372c21985c792fb28b4dab00.png?d=http%3A%2F%2Fcodebrawl.com%2Fassets%2Favatar-85eba94d6b6a060828a4a495ee10de68.png&amp;amp;r=PG&amp;amp;s=20"> tony-brewerio</a>
+</div>
+<div class="files">
+<div class="filename">
+README.md
+</div>
+<div class="markup"><h1>Robocrop: attempt at content-aware image cropping</h1>
+
+<p>Basic idea is to find some area on the image that stands out the most from the rest of the image.
+There are quite a few ways of doing this, and I decided to use only difference of color and cotrast levels, for each block vs entire image.</p>
+
+<p>I use stddev of colors of 3x3 pixel block with the center on the pixel as a pixel's 'contrast' here.</p>
+
+<h2>robocrop.rb - as simple as possible</h2>
+
+<p>The first version of robocrop is simple and only supports 100x100 blocks, you can't control how block weight is calculated etc.</p>
+
+<p>There are two weights used here to determine what block to use in the end.</p>
+
+<p>First is simply an average contrast level of block's pixels.
+This promotes blocks with high contrast, such as cat's fur and folds on dog's skin.</p>
+
+<p>Using only this gives passable results for cat/dog, but fails on the ducks, since ground have higher contrast there.</p>
+
+<p>Second is diversity of block's pixels contrast.
+This weight promotes blocks that has areas of both low and high contrast, making algorithm to more likely capture the 'edges' of objects.</p>
+
+<p>In the case of 'cat' and 'dog', adding diversity to weight will make cropped image to contain some of the blurry background behind the cat/dog, producing better results.
+It also helps on ducks, since the duck itself has a low contrast, while the ground has high, algorithm will try to fit both duck and the ground into a block, resulting in a block centered on duck's body.</p>
+
+<h2>robocrop2.rb - as a library</h2>
+
+<p>Same algorithm, packed as a new method of Image class, :robocrop ( and :robocrop! ), that allow to override some parameters.
+Accepts hash of arguments.</p>
+
+<p><em>:width</em>, <em>:height</em> - dimensions of resulting canvas.</p>
+
+<p><em>:contrast</em>, <em>:diversity</em> - additional weights that specify how much average contrast and diversity contributes to block weight.</p>
+
+<p><em>:precision</em> - specifies how many blocks are actually checked.
+Higher precision means more accurate results, but worse performance.
+For :precision =&gt; X, at most X*X blocks will be tested.</p>
+
+<h2>Random thoughts</h2>
+
+<p>Despite being very slow, this algorithm is simple and usually produce ok results.
+Interesting is that there is little to no point in comparing block's color versus image color, using only contrast is good enough, if not better.</p>
+
+<p>Also, I like how algorithm captures the edges.
+Similar result could be accomplished by using some edge detection library ( imagemagick for example ) first, but it would add complexity to the solution.</p>
+
+<p>I use NArray for calclulations, since its fast and does have nice api.</p>
+</div>
+
+<div class="filename">
+dog_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/4245b231d844a4303b77/a6927ccc804e6f25b5b895efa4aaafeafed46288/dog_cropped.png"></div>
+
+<div class="filename">
+duck_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/4245b231d844a4303b77/abe62f2dcb3bd6b36d3edfaebc84903f973c549d/duck_cropped.png"></div>
+
+<div class="filename">
+cat_cropped.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/4245b231d844a4303b77/8344c527200b2e6848a393d18847932dc609162a/cat_cropped.png"></div>
+
+<div class="filename">
+robocrop2.rb
+</div>
+<div class="highlight"><pre><span class="nb">require</span> <span class="s1">'rubygems'</span>
+<span class="nb">require</span> <span class="s1">'chunky_png'</span>
+<span class="nb">require</span> <span class="s1">'narray'</span>
+
+<span class="k">class</span> <span class="nc">ChunkyPNG</span><span class="o">::</span><span class="no">Image</span>
+
+  <span class="k">def</span> <span class="nf">robocrop</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+    <span class="nb">dup</span><span class="o">.</span><span class="n">robocrop</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">robocrop!</span><span class="p">(</span><span class="n">options</span> <span class="o">=</span> <span class="p">{})</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="c1"># dimensions</span>
+        <span class="ss">:width</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="ss">:height</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="c1"># weights</span>
+        <span class="ss">:contrast</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="ss">:diversity</span> <span class="o">=&gt;</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="c1"># complexity</span>
+        <span class="ss">:precision</span> <span class="o">=&gt;</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">}</span><span class="o">.</span><span class="n">merge!</span><span class="p">(</span><span class="n">options</span><span class="p">)</span>
+
+    <span class="c1"># create 3 width*height matrixes, that stores red, green or blue channel of each pixel</span>
+    <span class="n">image_rgb</span> <span class="o">=</span> <span class="no">NArray</span><span class="o">.</span><span class="n">byte</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+    <span class="c1"># fill the colors matrix</span>
+    <span class="n">width</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+      <span class="n">image_rgb</span><span class="o">[</span><span class="kp">true</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="kp">true</span><span class="o">]</span> <span class="o">=</span> <span class="n">column</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span> <span class="k">do</span> <span class="o">|</span><span class="n">color</span><span class="o">|</span>
+        <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">to_truecolor_bytes</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="c1"># calculate 'contrast' for every pixel of the image</span>
+    <span class="c1"># i use stddev of colors of 3x3 pixel block with the center on the pixel as a pixel's 'contrast' here</span>
+    <span class="c1"># stddev is calculated separately for every color channel</span>
+    <span class="n">image_contrast</span> <span class="o">=</span> <span class="no">NArray</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+    <span class="n">width</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+      <span class="n">height</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+        <span class="n">image_contrast</span><span class="o">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">image_rgb</span><span class="o">[</span>
+            <span class="kp">true</span><span class="p">,</span>
+            <span class="p">(</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="o">].</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="o">[</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="o">].</span><span class="n">min</span><span class="p">),</span>
+            <span class="p">(</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="o">].</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="o">[</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="o">].</span><span class="n">min</span><span class="p">)</span>
+        <span class="o">].</span><span class="n">stddev</span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="c1"># for every crop_width*crop_height block possible, find its top-left most pixel</span>
+    <span class="n">x_step</span> <span class="o">=</span> <span class="o">[</span><span class="p">(</span><span class="n">width</span><span class="o">-</span><span class="n">options</span><span class="o">[</span><span class="ss">:width</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span><span class="o">/</span><span class="n">options</span><span class="o">[</span><span class="ss">:precision</span><span class="o">]</span><span class="p">,</span> <span class="mi">1</span><span class="o">].</span><span class="n">max</span>
+    <span class="n">y_step</span> <span class="o">=</span> <span class="o">[</span><span class="p">(</span><span class="n">height</span><span class="o">-</span><span class="n">options</span><span class="o">[</span><span class="ss">:height</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span><span class="o">/</span><span class="n">options</span><span class="o">[</span><span class="ss">:precision</span><span class="o">]</span><span class="p">,</span> <span class="mi">1</span><span class="o">].</span><span class="n">max</span>
+    <span class="n">northwest_pixels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="n">width</span><span class="o">-</span><span class="n">options</span><span class="o">[</span><span class="ss">:width</span><span class="o">]</span><span class="p">))</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">x_step</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+    <span class="n">northwest_pixels</span> <span class="o">=</span> <span class="n">northwest_pixels</span><span class="o">.</span><span class="n">product</span><span class="p">((</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="n">height</span><span class="o">-</span><span class="n">options</span><span class="o">[</span><span class="ss">:height</span><span class="o">]</span><span class="p">))</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">y_step</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="p">)</span>
+
+    <span class="c1"># iterate over all possible blocks</span>
+    <span class="n">crop_x</span><span class="p">,</span> <span class="n">crop_y</span><span class="p">,</span> <span class="n">block_weight</span> <span class="o">=</span> <span class="n">northwest_pixels</span><span class="o">.</span><span class="n">collect</span> <span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">|</span>
+      <span class="c1"># contrast levels for pixels of this block</span>
+      <span class="n">block_contrast</span> <span class="o">=</span> <span class="n">image_contrast</span><span class="o">[</span><span class="n">x</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">options</span><span class="o">[</span><span class="ss">:width</span><span class="o">]</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="n">options</span><span class="o">[</span><span class="ss">:height</span><span class="o">]</span><span class="p">)</span><span class="o">]</span>
+
+      <span class="n">contrast</span> <span class="o">=</span> <span class="n">block_contrast</span><span class="o">.</span><span class="n">mean</span>  <span class="o">**</span> <span class="n">options</span><span class="o">[</span><span class="ss">:contrast</span><span class="o">]</span>
+      <span class="n">contrast_diversity</span> <span class="o">=</span> <span class="n">block_contrast</span><span class="o">.</span><span class="n">stddev</span> <span class="o">**</span> <span class="n">options</span><span class="o">[</span><span class="ss">:diversity</span><span class="o">]</span>
+      <span class="c1"># capture block coords with its weight</span>
+      <span class="o">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">contrast</span> <span class="o">*</span> <span class="n">contrast_diversity</span><span class="o">]</span>
+    <span class="p">}</span><span class="o">.</span><span class="n">max_by</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weight</span><span class="o">|</span> <span class="n">weight</span><span class="p">}</span>
+
+    <span class="n">crop!</span><span class="p">(</span><span class="n">crop_x</span><span class="p">,</span> <span class="n">crop_y</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:width</span><span class="o">]</span><span class="p">,</span> <span class="n">options</span><span class="o">[</span><span class="ss">:height</span><span class="o">]</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+<div class="filename">
+robocrop.rb
+</div>
+<div class="highlight"><pre><span class="nb">require</span> <span class="s1">'rubygems'</span>
+<span class="nb">require</span> <span class="s1">'chunky_png'</span>
+<span class="nb">require</span> <span class="s1">'narray'</span>
+
+<span class="k">def</span> <span class="nf">robocrop</span><span class="p">(</span><span class="n">original_filename</span><span class="p">,</span> <span class="n">cropped_filename</span><span class="p">)</span>
+  <span class="n">image</span> <span class="o">=</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Image</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">original_filename</span><span class="p">)</span>
+
+  <span class="c1"># create 3 width*height matrixes, that stores red, green or blue channel of each pixel</span>
+  <span class="n">image_rgb</span> <span class="o">=</span> <span class="no">NArray</span><span class="o">.</span><span class="n">byte</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+  <span class="c1"># fill the colors matrix</span>
+  <span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+    <span class="n">image_rgb</span><span class="o">[</span><span class="kp">true</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="kp">true</span><span class="o">]</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">collect</span> <span class="k">do</span> <span class="o">|</span><span class="n">color</span><span class="o">|</span>
+      <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Color</span><span class="o">.</span><span class="n">to_truecolor_bytes</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># calculate 'contrast' for every pixel of the image</span>
+  <span class="c1"># i use stddev of colors of 3x3 pixel block with the center on the pixel as a pixel's 'contrast' here</span>
+  <span class="c1"># stddev is calculated separately for every color channel</span>
+  <span class="n">image_contrast</span> <span class="o">=</span> <span class="no">NArray</span><span class="o">.</span><span class="n">float</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+  <span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="o">.</span><span class="n">times</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+      <span class="n">image_contrast</span><span class="o">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">image_rgb</span><span class="o">[</span>
+          <span class="kp">true</span><span class="p">,</span>
+          <span class="p">(</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="o">].</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="o">[</span><span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="o">].</span><span class="n">min</span><span class="p">),</span>
+          <span class="p">(</span><span class="o">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="o">].</span><span class="n">max</span><span class="p">)</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="o">[</span><span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="o">].</span><span class="n">min</span><span class="p">)</span>
+      <span class="o">].</span><span class="n">stddev</span><span class="p">(</span><span class="mi">1</span><span class="o">.</span><span class="n">.</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># for every 100x100 block possible, find its top-left most pixel</span>
+  <span class="n">x_step</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">y_step</span> <span class="o">=</span> <span class="mi">1</span>
+  <span class="n">northwest_pixels</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">100</span><span class="p">))</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">x_step</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+  <span class="n">northwest_pixels</span> <span class="o">=</span> <span class="n">northwest_pixels</span><span class="o">.</span><span class="n">product</span><span class="p">((</span><span class="mi">0</span><span class="o">.</span><span class="n">.</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">100</span><span class="p">))</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">y_step</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span><span class="p">)</span>
+
+  <span class="c1"># iterate over all possible blocks</span>
+  <span class="n">crop_x</span><span class="p">,</span> <span class="n">crop_y</span><span class="p">,</span> <span class="n">block_weight</span> <span class="o">=</span> <span class="n">northwest_pixels</span><span class="o">.</span><span class="n">collect</span> <span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">|</span>
+    <span class="c1"># contrast levels for pixels of this block</span>
+    <span class="n">block_contrast</span> <span class="o">=</span> <span class="n">image_contrast</span><span class="o">[</span><span class="n">x</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">100</span><span class="p">),</span> <span class="n">y</span><span class="o">.</span><span class="n">.</span><span class="o">.</span><span class="p">(</span><span class="n">y</span><span class="o">+</span><span class="mi">100</span><span class="p">)</span><span class="o">]</span>
+
+    <span class="n">contrast</span> <span class="o">=</span> <span class="n">block_contrast</span><span class="o">.</span><span class="n">mean</span>
+    <span class="n">contrast_diversity</span> <span class="o">=</span> <span class="n">block_contrast</span><span class="o">.</span><span class="n">stddev</span>
+    <span class="c1"># capture block coords with its weight</span>
+    <span class="o">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">contrast</span> <span class="o">*</span> <span class="n">contrast_diversity</span><span class="o">]</span>
+  <span class="p">}</span><span class="o">.</span><span class="n">max_by</span><span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">weight</span><span class="o">|</span> <span class="n">weight</span><span class="p">}</span>
+
+  <span class="c1"># crop the image and save it with a new filename</span>
+  <span class="n">image</span><span class="o">.</span><span class="n">crop!</span><span class="p">(</span><span class="n">crop_x</span><span class="p">,</span> <span class="n">crop_y</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+  <span class="n">image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">cropped_filename</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">robocrop</span><span class="p">(</span><span class="s1">'cat.png'</span><span class="p">,</span> <span class="s1">'cat_cropped.png'</span><span class="p">)</span>
+<span class="n">robocrop</span><span class="p">(</span><span class="s1">'dog.png'</span><span class="p">,</span> <span class="s1">'dog_cropped.png'</span><span class="p">)</span>
+<span class="n">robocrop</span><span class="p">(</span><span class="s1">'duck.png'</span><span class="p">,</span> <span class="s1">'duck_cropped.png'</span><span class="p">)</span>
+</pre>
+</div>
+
+<a class="extend">
+<span>
+View full entry
+</span>
+</a>
+</div>
+Finished in <strong>3rd place</strong> with a final score of <strong>3.2/5</strong>. (View the <a href="https://gist.github.com/4245b231d844a4303b77">Gist</a>)
+
+<div class="comments" data-gist_id="4245b231d844a4303b77"></div>
+<form accept-charset="UTF-8" action="/contests/content-aware-image-cropping-with-chunkypng/entries/4ed38780b1e6546cb60005c1/votes" class="new_vote" id="new_vote" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="5rURtGeXSNrcgwErapbQb6E5tEWqprS7CcU8qmaQ8cI="></div>
+<label for="vote_comment">Comment</label>
+<textarea cols="40" id="vote_comment" name="vote[comment]" rows="20"></textarea>
+<input name="commit" type="submit" value="Comment">
+</form>
+
+
+</li>
+<li class="entry" id="entry_4ec3b492b1e6540bb20001a5">
+<div class="owner">
+<a href="/users/a2800276" name="a2800276"><img alt="3a091951b5a04a506e3b67aed8228db9.png?d=http%3a%2f%2fcodebrawl.com%2fassets%2favatar" class="gravatar" src="http://gravatar.com/avatar/3a091951b5a04a506e3b67aed8228db9.png?d=http%3A%2F%2Fcodebrawl.com%2Fassets%2Favatar-85eba94d6b6a060828a4a495ee10de68.png&amp;amp;r=PG&amp;amp;s=20"> a2800276</a>
+</div>
+<div class="files">
+<div class="filename">
+README.md
+</div>
+<div class="markup"><h1>Simplest possible solution to image cropping problem:</h1>
+
+<ul><li>grab the most "exciting" part of the image
+
+<ul><li>"exciting" =&gt; least average according to unweighed color</li>
+</ul></li>
+<li>checks every single 100 X 100 splotch, so it's
+ <em>very</em> inefficient. Not checking <em>every</em> single
+ subimage would be the most obvious improvement,
+ but frankly, doing image processing in native
+ ruby is probably not the best idea anyhow.</li>
+<li>special bonus! also finds the least interesting 100X100
+ subimage.</li>
+<li>usage: <code>ruby chunky.rb &lt;inputfn.png&gt;</code></li>
+<li>most "exciting" crop is saved as <code>&lt;inputfn.png&gt;.max.png</code></li>
+<li>most "boring" crop is saved as <code>&lt;inputfn.png&gt;.min.png</code></li>
+</ul><h2>This works:</h2>
+
+<ul><li>extremely well for the duck</li>
+<li>well for the cat</li>
+<li>so-so for the dog</li>
+</ul><p>Actually in the case of the dog, the bit identified as "most boring" is a pretty good crop. Reason being that the dog picture has little variation: half big black dog, half green. All said, though, the dog crop is acceptable and by far not the worst possible choice.</p>
+
+<h2>Possible improvements:</h2>
+
+<ul><li>tons of performance optimizations</li>
+<li>calculating the averages differently, especially perception weighting the individual color channels or hsv components.</li>
+<li>doing this properly would require more sophisticated algorithms, I doubt it would be feasible with ChunkyPNG</li>
+</ul></div>
+
+<div class="filename">
+dog.png.min.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/52f5154899778860cef8/050bdeefc35f561cd8fb1ffd9fa261b6292f9a2a/dog.png.min.png"></div>
+
+<div class="filename">
+cat.png.min.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/52f5154899778860cef8/09658b62fc83440cd7339708c344e109112ee61d/cat.png.min.png"></div>
+
+<div class="filename">
+duck.png.min.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/52f5154899778860cef8/5fc548872b9cab422d4ef7c6e19d5851aa7b868e/duck.png.min.png"></div>
+
+<div class="filename">
+dog.png.max.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/52f5154899778860cef8/a69890f9ea214c28e28c35d8b122bd40ef37fe00/dog.png.max.png"></div>
+
+<div class="filename">
+duck.png.max.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/52f5154899778860cef8/4f31b54dc7f868c7ee4a3ccffcd2edc34c82f2ee/duck.png.max.png"></div>
+
+<div class="filename">
+cat.png.max.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/52f5154899778860cef8/56d73ddc9bd559b65ebbd94cc4ff6379e337c11b/cat.png.max.png"></div>
+
+<div class="filename">
+chunky.rb
+</div>
+<div class="highlight"><pre><span class="nb">require</span> <span class="s1">'chunky_png'</span>
+
+
+<span class="kp">include</span> <span class="no">ChunkyPNG</span>
+
+
+<span class="k">def</span> <span class="nf">usage</span>
+  <span class="no">STDERR</span><span class="o">.</span><span class="n">puts</span> <span class="s2">"usage: [bla] filename.png"</span>
+  <span class="nb">exit</span> <span class="mi">1</span>
+<span class="k">end</span>
+
+<span class="n">usage</span> <span class="k">if</span> <span class="mi">1</span> <span class="o">!=</span> <span class="no">ARGV</span><span class="o">.</span><span class="n">length</span> 
+
+
+<span class="c1"># determine "average" color of a splotch.</span>
+<span class="k">def</span> <span class="nf">avg</span> <span class="n">img</span>
+  <span class="n">sum</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">pixels</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">pixel</span><span class="o">|</span>
+    <span class="n">sum</span> <span class="o">+=</span> <span class="n">pixel</span>
+  <span class="p">}</span>  
+  <span class="n">sum</span><span class="o">/</span><span class="n">img</span><span class="o">.</span><span class="n">pixels</span><span class="o">.</span><span class="n">length</span>
+<span class="k">end</span>
+
+<span class="c1"># iterate over every possible 100 X 100 </span>
+<span class="c1"># subimage</span>
+<span class="k">def</span> <span class="nf">each</span> <span class="n">img</span>
+  <span class="c1"># replace `upto` with `step` here to </span>
+  <span class="c1"># speed things up</span>
+  <span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">x</span><span class="o">|</span>
+    <span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">img</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">100</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">y</span><span class="o">|</span>
+      <span class="k">yield</span> <span class="n">img</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">100</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="k">end</span>
+
+
+
+<span class="n">img</span>     <span class="o">=</span> <span class="no">Image</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">)</span>
+<span class="n">img_avg</span> <span class="o">=</span> <span class="n">avg</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+
+
+
+<span class="n">max</span>              <span class="o">=</span> <span class="mi">0</span>
+<span class="n">min</span>              <span class="o">=</span> <span class="mh">0xffffffffffff</span>
+<span class="n">img_max</span><span class="p">,</span> <span class="n">img_min</span> <span class="o">=</span> <span class="kp">nil</span><span class="p">,</span> <span class="kp">nil</span>
+
+<span class="n">each</span><span class="p">(</span><span class="n">img</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span>
+  <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">avg</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-</span><span class="n">img_avg</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span>
+  <span class="n">max</span><span class="p">,</span> <span class="n">img_max</span> <span class="o">=</span> <span class="n">d</span><span class="p">,</span> <span class="n">i</span> <span class="k">if</span> <span class="n">d</span> <span class="o">&gt;</span> <span class="n">max</span>
+  <span class="n">min</span><span class="p">,</span> <span class="n">img_min</span> <span class="o">=</span> <span class="n">d</span><span class="p">,</span> <span class="n">i</span> <span class="k">if</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="n">min</span>
+<span class="p">}</span>
+
+
+
+<span class="n">img_max</span><span class="o">.</span><span class="n">to_image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">]+</span><span class="s2">".max.png"</span><span class="p">)</span>
+<span class="n">img_min</span><span class="o">.</span><span class="n">to_image</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">]+</span><span class="s2">".min.png"</span><span class="p">)</span>
+</pre>
+</div>
+
+<a class="extend">
+<span>
+View full entry
+</span>
+</a>
+</div>
+Finished in <strong>4th place</strong> with a final score of <strong>3.2/5</strong>. (View the <a href="https://gist.github.com/52f5154899778860cef8">Gist</a>)
+
+<div class="comments" data-gist_id="52f5154899778860cef8"></div>
+<form accept-charset="UTF-8" action="/contests/content-aware-image-cropping-with-chunkypng/entries/4ec3b492b1e6540bb20001a5/votes" class="new_vote" id="new_vote" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="5rURtGeXSNrcgwErapbQb6E5tEWqprS7CcU8qmaQ8cI="></div>
+<label for="vote_comment">Comment</label>
+<textarea cols="40" id="vote_comment" name="vote[comment]" rows="20"></textarea>
+<input name="commit" type="submit" value="Comment">
+</form>
+
+
+</li>
+<li class="entry" id="entry_4ec9e7c3b1e6543ca10001b7">
+<div class="owner">
+<a href="/users/nixterrimus" name="Nick Rowe"><img alt="790a7d91696ab86419f5aadd5a479785.png?d=http%3a%2f%2fcodebrawl.com%2fassets%2favatar" class="gravatar" src="http://gravatar.com/avatar/790a7d91696ab86419f5aadd5a479785.png?d=http%3A%2F%2Fcodebrawl.com%2Fassets%2Favatar-85eba94d6b6a060828a4a495ee10de68.png&amp;amp;r=PG&amp;amp;s=20"> Nick Rowe</a>
+</div>
+<div class="files">
+<div class="filename">
+readme.md
+</div>
+<div class="markup"><h1>Crop</h1>
+
+<p>This solution crops to the center 100 pixel square in the image.</p>
+
+<h1>Show me the Output!</h1>
+
+<ul><li><img src="http://dl.dropbox.com/u/59591/center/duck-output.png" alt=""></li>
+<li><img src="http://dl.dropbox.com/u/59591/center/dog-output.png" alt=""></li>
+<li><img src="http://dl.dropbox.com/u/59591/center/cat-output.png" alt=""></li>
+</ul><h1>Why this is a great solution</h1>
+
+<ul><li>It's wicked fast</li>
+<li>It's easily maintainable</li>
+<li>It gets the right crop at least as often as more complicated solutions</li>
+<li>The most interesting part of an image is frequently at the center</li>
+</ul><h1>Seriously?</h1>
+
+<p>I spent a lot of time thinking about this and tried other solutions.  The solution I came to is that there aren't a lot of great solutions.  An algorithm gets it wrong as much as it gets it right.  Centering the crop was the first solution I wrote up as the stupid simple case.  It was meant to be the solution against which I compared all other solutions.  What I found is that I was happier with it for cropping than other solutions.</p>
+
+<p>Let me try and convince you a bit more.  Let's talk about the duck image:</p>
+
+<p><img src="http://dl.dropbox.com/u/59591/duck.png" alt=""></p>
+
+<p>The duck image has no true focal point.  There are no lines leading to a central point in the photo.  There is no strong use of contrasting color.  However if we're talking human focal points then we're probably talking about the heads.  We would like to see the ducks cropped to the ducks' heads:</p>
+
+<p><img src="http://dl.dropbox.com/u/59591/duck-focal-and-crop.png" alt=""></p>
+
+<p>In this image I've highlighted the focal points in pink.  I've also highlighted 'ideal' crops in orange.  Notice anything interesting?  Even if the algorithm could perfectly determine the focal point the crop wouldn't be right.  Another thing that's interesting?  This is completely a matter of opinion.  Cropping is something that's pretty subjective.</p>
+
+<p>Another interesting thing- this center crop picked a solution that was very similar to another I had toyed with that looked for standout colors.  This is because the duck's legs are one of the brightest parts of the image.  That algorithm was considerably slower.</p>
+
+<p>Now let's talk about the dog and the cat- there is a much clearer center point.  This centering method grabs the right picture.</p>
+
+<p>Another good thing about this method is that it's fast.  There's no deep calculation that needs to go on so this solution is able to churn through images very quickly.  It's also small so it's very maintainable.</p>
+
+<p>If this brawl was a challenge to ship code, this would definitely be the solution I'd ship.</p>
+
+<h1>Other solutions</h1>
+
+<p>As I said I explored other solutions and I'd like to share some quick notes:</p>
+
+<h2>Blob Detection</h2>
+
+<p>I explored blob detection by flipping the image grayscale and upping the brightness and contrast until there were black blobs on the page.  I then looked for the box that best fit the most number of black pixels.  This worked surprisingly well for the ducks, not good for the cat, and awful for the dog.  The algorithm falls apart on any images that are dark.</p>
+
+<h2>Interest Hue Detection</h2>
+
+<p>This algorithm looked for interesting hues.  I was really disappointed with the results.</p>
+</div>
+
+<div class="filename">
+dog-output.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/25885913abc56fc34a18/dcb06ec6bc4ba519f70b8f47d89b14ba746bd74e/dog-output.png"></div>
+
+<div class="filename">
+cat-output.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/25885913abc56fc34a18/289029264b15887f2e7b624bd8ed6e53cb59bc29/cat-output.png"></div>
+
+<div class="filename">
+duck-output.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/25885913abc56fc34a18/33daab1db381da7b13efb9937e15b333030f3246/duck-output.png"></div>
+
+<div class="filename">
+crop.rb
+</div>
+<div class="highlight"><pre><span class="nb">require</span> <span class="s1">'rubygems'</span>
+<span class="nb">require</span> <span class="s1">'chunky_png'</span>
+
+<span class="k">module</span> <span class="nn">ChunkyPNG::Canvas::Operations</span>
+  <span class="k">def</span> <span class="nf">crop_square_at_point_of_interest</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="p">(</span> <span class="n">size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">x</span><span class="o">&lt;</span><span class="mi">0</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="p">(</span> <span class="n">size</span> <span class="o">/</span> <span class="mi">2</span> <span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">y</span><span class="o">&lt;</span><span class="mi">0</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">size</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="nf">center_point_of_interest</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+  <span class="o">[</span><span class="n">image</span><span class="o">.</span><span class="n">dimension</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span> <span class="n">image</span><span class="o">.</span><span class="n">dimension</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mi">2</span><span class="o">]</span>
+<span class="k">end</span>
+
+<span class="o">[</span><span class="s1">'cat'</span><span class="p">,</span> <span class="s1">'duck'</span><span class="p">,</span> <span class="s1">'dog'</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">test_image</span><span class="o">|</span>
+  <span class="n">input</span> <span class="o">=</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Image</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">test_image</span><span class="si">}</span><span class="s2">.png"</span><span class="p">)</span>
+  <span class="n">point_of_interest</span> <span class="o">=</span> <span class="n">center_point_of_interest</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+  <span class="n">input</span><span class="o">.</span><span class="n">crop_square_at_point_of_interest</span><span class="p">(</span><span class="n">point_of_interest</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span> 
+        <span class="n">point_of_interest</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">test_image</span><span class="si">}</span><span class="s2">-output.png"</span><span class="p">)</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+<a class="extend">
+<span>
+View full entry
+</span>
+</a>
+</div>
+Finished in <strong>5th place</strong> with a final score of <strong>2.8/5</strong>. (View the <a href="https://gist.github.com/25885913abc56fc34a18">Gist</a>)
+
+<div class="comments" data-gist_id="25885913abc56fc34a18"></div>
+<form accept-charset="UTF-8" action="/contests/content-aware-image-cropping-with-chunkypng/entries/4ec9e7c3b1e6543ca10001b7/votes" class="new_vote" id="new_vote" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="5rURtGeXSNrcgwErapbQb6E5tEWqprS7CcU8qmaQ8cI="></div>
+<label for="vote_comment">Comment</label>
+<textarea cols="40" id="vote_comment" name="vote[comment]" rows="20"></textarea>
+<input name="commit" type="submit" value="Comment">
+</form>
+
+
+</li>
+<li class="entry" id="entry_4ec5a3edb1e6541de2000204">
+<div class="owner">
+<a href="/users/irukavina" name="irukavina"><img alt="Bef675bbcf3cd4bde9164a8b8e3f96df.png?d=http%3a%2f%2fcodebrawl.com%2fassets%2favatar" class="gravatar" src="http://gravatar.com/avatar/bef675bbcf3cd4bde9164a8b8e3f96df.png?d=http%3A%2F%2Fcodebrawl.com%2Fassets%2Favatar-85eba94d6b6a060828a4a495ee10de68.png&amp;amp;r=PG&amp;amp;s=20"> irukavina</a>
+</div>
+<div class="files">
+<div class="filename">
+README
+</div>
+<div class="highlight plain"><pre>Program is run by typing "ruby main-single.rb input.png output.png". 
+The output contains the cropped image in png format.</pre></div>
+
+<div class="filename">
+dog.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/76512d9437a3364d7898/3390b6fc82b066c3e21bdefcd539b3f25d9d9eda/dog.png"></div>
+
+<div class="filename">
+cat.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/76512d9437a3364d7898/299fa3a415471b06bbdcf6964ad3af81d38dedc3/cat.png"></div>
+
+<div class="filename">
+duck.png
+</div>
+<div class="image"><img src="https://gist.github.com/raw/76512d9437a3364d7898/7b1004530a00a4113a0d503b213f8f924775c5ab/duck.png"></div>
+
+<div class="filename">
+main.rb
+</div>
+<div class="highlight"><pre><span class="nb">require</span> <span class="s1">'rubygems'</span>
+<span class="nb">require</span> <span class="s1">'chunky_png'</span>
+
+<span class="no">WIDTH</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="no">HEIGHT</span> <span class="o">=</span> <span class="mi">100</span>
+
+<span class="k">class</span> <span class="nc">TwodimensionalArray</span>
+	<span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+		<span class="vi">@width</span> <span class="o">=</span> <span class="n">width</span>
+		<span class="vi">@height</span> <span class="o">=</span> <span class="n">height</span>
+		<span class="vi">@array</span> <span class="o">=</span> <span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+		<span class="vi">@array</span><span class="o">.</span><span class="n">map!</span> <span class="p">{</span><span class="nb">Array</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">height</span><span class="p">)}</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">[]</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+		<span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">[]=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+		<span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">value</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">width</span> 
+		<span class="vi">@width</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">height</span>
+		<span class="vi">@height</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">average</span>
+		<span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="vi">@width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="vi">@height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+				<span class="n">sum</span> <span class="o">+=</span> <span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span>
+			<span class="k">end</span>
+		<span class="k">end</span>
+		<span class="n">sum</span> <span class="o">/</span> <span class="p">(</span><span class="vi">@width</span> <span class="o">*</span> <span class="vi">@height</span><span class="p">)</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">key_values</span>
+		<span class="n">max</span> <span class="o">=</span> <span class="n">min</span> <span class="o">=</span> <span class="vi">@array</span><span class="o">[</span><span class="mi">0</span><span class="o">][</span><span class="mi">0</span><span class="o">]</span>	
+		<span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="vi">@width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="vi">@height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+				<span class="n">sum</span> <span class="o">+=</span> <span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span>
+				<span class="n">max</span> <span class="o">=</span> <span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> <span class="k">if</span> <span class="n">max</span> <span class="o">&lt;</span> <span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> 
+				<span class="n">min</span> <span class="o">=</span> <span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> <span class="k">if</span> <span class="n">min</span> <span class="o">&gt;</span> <span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="o">][</span><span class="n">y</span><span class="o">]</span> 
+			<span class="k">end</span>
+		<span class="k">end</span>
+		<span class="o">[</span><span class="n">min</span><span class="p">,</span> <span class="n">sum</span> <span class="o">/</span> <span class="p">(</span><span class="vi">@width</span> <span class="o">*</span> <span class="vi">@height</span><span class="p">),</span> <span class="n">max</span><span class="o">]</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">neighbours</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">distance</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="o">[]</span>
+		<span class="p">(</span><span class="o">-</span><span class="n">distance</span><span class="p">)</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dx</span><span class="o">|</span>
+			<span class="p">(</span><span class="o">-</span><span class="n">distance</span><span class="p">)</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">dy</span><span class="o">|</span>				
+				<span class="n">result</span> <span class="o">&lt;&lt;</span> <span class="vi">@array</span><span class="o">[</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span><span class="o">][</span><span class="n">y</span> <span class="o">+</span> <span class="n">dy</span><span class="o">]</span> <span class="k">unless</span> <span class="p">((</span><span class="n">dx</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">dy</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">dx</span> <span class="o">&gt;=</span> <span class="n">width</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">y</span> <span class="o">+</span> <span class="n">dy</span> <span class="o">&gt;=</span> <span class="n">height</span><span class="p">))</span>
+			<span class="k">end</span>
+		<span class="k">end</span>		
+		<span class="n">result</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">from_canvas</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="no">TwodimensionalArray</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">source</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+				<span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="no">Pixel</span><span class="o">.</span><span class="n">from_int</span><span class="p">(</span><span class="n">source</span><span class="o">.</span><span class="n">get_pixel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+			<span class="k">end</span>
+		<span class="k">end</span>
+		<span class="n">result</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+<span class="k">class</span> <span class="nc">SumArray</span>
+	<span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">source_array</span><span class="p">,</span> <span class="n">sum_width</span><span class="p">,</span> <span class="n">sum_height</span><span class="p">)</span>
+		<span class="vi">@sum_width</span> <span class="o">=</span> <span class="n">sum_width</span>
+		<span class="vi">@sum_height</span> <span class="o">=</span> <span class="n">sum_height</span>
+		<span class="vi">@source_array</span> <span class="o">=</span> <span class="n">source_array</span>
+		<span class="n">cumulative_array</span> <span class="o">=</span> <span class="n">cumulative</span><span class="p">(</span><span class="n">source_array</span><span class="p">)</span>
+		<span class="vi">@array</span> <span class="o">=</span> <span class="no">TwodimensionalArray</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">source_array</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">sum_width</span><span class="p">,</span> <span class="n">source_array</span><span class="o">.</span><span class="n">height</span> <span class="o">-</span> <span class="n">sum_height</span><span class="p">)</span>
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="vi">@array</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="vi">@array</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+				<span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">cumulative_array</span><span class="o">[</span><span class="n">x</span><span class="o">+</span><span class="n">sum_width</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="o">+</span><span class="n">sum_height</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span>
+				<span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">-=</span> <span class="n">cumulative_array</span><span class="o">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="o">+</span><span class="n">sum_height</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+				<span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">-=</span> <span class="n">cumulative_array</span><span class="o">[</span><span class="n">x</span><span class="o">+</span><span class="n">sum_width</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+				<span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">+=</span> <span class="n">cumulative_array</span><span class="o">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="k">if</span> <span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">))</span>
+				<span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">/=</span> <span class="p">(</span><span class="n">sum_width</span><span class="o">*</span><span class="n">sum_height</span><span class="p">)</span>						
+			<span class="k">end</span>
+		<span class="k">end</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">[]</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+		<span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">]</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">sum_width</span>
+		<span class="vi">@sum_width</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">sum_height</span>
+		<span class="vi">@sum_height</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">max_difference</span>
+		<span class="n">average_contrast</span> <span class="o">=</span> <span class="vi">@source_array</span><span class="o">.</span><span class="n">average</span>		
+		<span class="n">max_x</span> <span class="o">=</span> <span class="n">max_y</span> <span class="o">=</span> <span class="n">max_difference</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="vi">@array</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="vi">@array</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+				<span class="k">if</span> <span class="p">((</span><span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">-</span> <span class="n">average_contrast</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span> <span class="o">&gt;</span> <span class="n">max_difference</span><span class="p">)</span>
+					<span class="n">max_difference</span> <span class="o">=</span> <span class="p">(</span><span class="vi">@array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">-</span> <span class="n">average_contrast</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span>
+					<span class="n">max_x</span> <span class="o">=</span> <span class="n">x</span>
+					<span class="n">max_y</span> <span class="o">=</span> <span class="n">y</span>
+				<span class="k">end</span>
+			<span class="k">end</span>
+		<span class="k">end</span>
+		<span class="o">[</span><span class="n">max_x</span><span class="p">,</span> <span class="n">max_y</span><span class="o">]</span>
+	<span class="k">end</span>
+	
+	<span class="kp">private</span>
+	<span class="k">def</span> <span class="nf">cumulative</span><span class="p">(</span><span class="n">source_array</span><span class="p">)</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="no">TwodimensionalArray</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">source_array</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">source_array</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">source_array</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>		
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">source_array</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>				
+				<span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">source_array</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span>
+				<span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">+=</span> <span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+				<span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">+=</span> <span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="k">if</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>
+				<span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">-=</span> <span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="o">]</span> <span class="k">if</span> <span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">))</span>				
+			<span class="k">end</span>
+		<span class="k">end</span>
+		<span class="n">result</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+<span class="k">class</span> <span class="nc">AreaOfInterest</span> 	
+	<span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
+		<span class="vi">@width</span><span class="p">,</span> <span class="vi">@height</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span>		
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>		
+		<span class="n">img</span> <span class="o">=</span> <span class="no">TwodimensionalArray</span><span class="o">.</span><span class="n">from_canvas</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+		<span class="n">contrast_field</span> <span class="o">=</span> <span class="n">get_contrast_field</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+		<span class="n">avg</span> <span class="o">=</span> <span class="n">contrast_field</span><span class="o">.</span><span class="n">average</span>
+		<span class="n">min</span><span class="p">,</span> <span class="n">avg</span><span class="p">,</span> <span class="n">max</span> <span class="o">=</span> <span class="n">contrast_field</span><span class="o">.</span><span class="n">key_values</span>
+		
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">contrast_field</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">contrast_field</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+					<span class="n">contrast_field</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="p">((</span><span class="n">contrast_field</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">&lt;</span> <span class="n">avg</span><span class="p">)</span> <span class="p">?</span> <span class="n">min</span> <span class="p">:</span> <span class="n">max</span><span class="p">)</span>				
+					<span class="c1">#contrast_field[x, y] = 0 if contrast_field[x,y] &lt; avg</span>
+			<span class="k">end</span>
+		<span class="k">end</span>
+		<span class="n">area_of_interest</span> <span class="o">=</span> <span class="n">get_area_of_interest</span><span class="p">(</span><span class="n">contrast_field</span><span class="p">,</span> <span class="vi">@width</span><span class="p">,</span> <span class="vi">@height</span><span class="p">)</span>				
+		<span class="n">source</span><span class="o">.</span><span class="n">crop</span><span class="p">(</span><span class="n">area_of_interest</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span> <span class="n">area_of_interest</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">,</span> <span class="vi">@width</span><span class="p">,</span> <span class="vi">@height</span><span class="p">)</span>
+		<span class="c1">#to_png(contrast_field)</span>
+	<span class="k">end</span>	
+	
+	<span class="kp">private</span>		
+	<span class="k">def</span> <span class="nf">get_area_of_interest</span><span class="p">(</span><span class="n">contrast_field</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>		
+		<span class="no">SumArray</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">contrast_field</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span><span class="o">.</span><span class="n">max_difference</span>			
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">get_contrast_field</span><span class="p">(</span><span class="n">pixel_field</span><span class="p">)</span> 
+		<span class="n">result</span> <span class="o">=</span> <span class="no">TwodimensionalArray</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">pixel_field</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">pixel_field</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">pixel_field</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">pixel_field</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+				<span class="n">neighbours</span> <span class="o">=</span> <span class="n">pixel_field</span><span class="o">.</span><span class="n">neighbours</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+				<span class="n">result</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span> <span class="o">=</span> <span class="n">neighbours</span><span class="o">.</span><span class="n">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="p">{</span><span class="o">|</span><span class="n">sum</span><span class="p">,</span> <span class="n">neighbour</span><span class="o">|</span> <span class="n">sum</span> <span class="o">+=</span> <span class="n">pixel_field</span><span class="o">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">].</span><span class="n">absolute_difference</span><span class="p">(</span><span class="n">neighbour</span><span class="p">)}</span> <span class="o">/</span> <span class="n">neighbours</span><span class="o">.</span><span class="n">count</span>				
+			<span class="k">end</span>
+		<span class="k">end</span>		
+		<span class="n">result</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">to_png</span><span class="p">(</span><span class="n">input</span><span class="p">)</span>
+		<span class="n">result</span> <span class="o">=</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Canvas</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">input</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="n">input</span><span class="o">.</span><span class="n">height</span><span class="p">)</span>
+		<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">input</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+			<span class="mi">0</span><span class="o">.</span><span class="n">upto</span><span class="p">(</span><span class="n">input</span><span class="o">.</span><span class="n">height</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">y</span><span class="o">|</span>
+				<span class="n">result</span><span class="o">.</span><span class="n">set_pixel</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">input</span><span class="o">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="o">]</span><span class="p">)</span>
+			<span class="k">end</span>
+		<span class="k">end</span>
+		<span class="n">result</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+<span class="k">class</span> <span class="nc">Pixel</span> 	
+	<span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">from_int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+		<span class="no">Pixel</span><span class="o">.</span><span class="n">new</span><span class="p">((</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">24</span><span class="p">)</span> <span class="o">%</span> <span class="mh">0xFF</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">%</span> <span class="mh">0xFF</span><span class="p">,</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">%</span> <span class="mh">0xFF</span><span class="p">,</span> <span class="n">value</span> <span class="o">%</span> <span class="mh">0xFF</span><span class="p">)</span>
+	<span class="k">end</span>
+
+	<span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">alpha</span><span class="p">,</span> <span class="n">red</span><span class="p">,</span> <span class="n">green</span><span class="p">,</span> <span class="n">blue</span><span class="p">)</span>
+		<span class="vi">@blue</span> <span class="o">=</span> <span class="n">blue</span>
+		<span class="vi">@green</span> <span class="o">=</span> <span class="n">green</span>
+		<span class="vi">@red</span> <span class="o">=</span> <span class="n">red</span>
+		<span class="vi">@alpha</span> <span class="o">=</span> <span class="n">alpha</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">red</span>
+		<span class="vi">@red</span>
+	<span class="k">end</span>
+
+	<span class="k">def</span> <span class="nf">red</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+		<span class="vi">@red</span> <span class="o">=</span> <span class="n">value</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">green</span>
+		<span class="vi">@green</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">green</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+		<span class="vi">@green</span> <span class="o">=</span> <span class="n">value</span>
+	<span class="k">end</span>	
+	
+	<span class="k">def</span> <span class="nf">blue</span>
+		<span class="vi">@blue</span>
+	<span class="k">end</span>
+
+	<span class="k">def</span> <span class="nf">blue</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+		<span class="vi">@blue</span> <span class="o">=</span> <span class="n">value</span>
+	<span class="k">end</span>
+
+	
+	<span class="k">def</span> <span class="nf">alpha</span>
+		<span class="vi">@alpha</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">alpha</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+		<span class="vi">@alpha</span> <span class="o">=</span> <span class="n">value</span>
+	<span class="k">end</span>
+	
+	<span class="k">def</span> <span class="nf">absolute_difference</span><span class="p">(</span><span class="n">another_pixel</span><span class="p">)</span>
+		<span class="p">(</span><span class="n">red</span> <span class="o">-</span> <span class="n">another_pixel</span><span class="o">.</span><span class="n">red</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span> <span class="o">+</span> <span class="p">(</span><span class="n">green</span> <span class="o">-</span> <span class="n">another_pixel</span><span class="o">.</span><span class="n">green</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span> <span class="o">+</span> <span class="p">(</span><span class="n">blue</span> <span class="o">-</span> <span class="n">another_pixel</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span> <span class="o">+</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">-</span> <span class="n">another_pixel</span><span class="o">.</span><span class="n">alpha</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span>
+	<span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">source</span> <span class="o">=</span> <span class="no">ChunkyPNG</span><span class="o">::</span><span class="no">Image</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">)</span>
+<span class="n">processor</span> <span class="o">=</span> <span class="no">AreaOfInterest</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="no">WIDTH</span><span class="p">,</span> <span class="no">HEIGHT</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">processor</span><span class="o">.</span><span class="n">process</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+<span class="n">result</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="no">ARGV</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span> <span class="o">||</span> <span class="s2">"output.png"</span><span class="p">)</span>
+</pre>
+</div>
+
+<a class="extend">
+<span>
+View full entry
+</span>
+</a>
+</div>
+Finished in <strong>6th place</strong> with a final score of <strong>2.4/5</strong>. (View the <a href="https://gist.github.com/76512d9437a3364d7898">Gist</a>)
+
+<div class="comments" data-gist_id="76512d9437a3364d7898"></div>
+<form accept-charset="UTF-8" action="/contests/content-aware-image-cropping-with-chunkypng/entries/4ec5a3edb1e6541de2000204/votes" class="new_vote" id="new_vote" method="post"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"><input name="authenticity_token" type="hidden" value="5rURtGeXSNrcgwErapbQb6E5tEWqprS7CcU8qmaQ8cI="></div>
+<label for="vote_comment">Comment</label>
+<textarea cols="40" id="vote_comment" name="vote[comment]" rows="20"></textarea>
+<input name="commit" type="submit" value="Comment">
+</form>
+
+
+</li>
+
+</ul>
+</article>

@@ -1,0 +1,15 @@
+<% @contests.each do |contest| %>
+  <h2>
+    <%= contest.metadata['title'] %>
+  </h2>
+
+  <ol class="winners">
+  <% contest.metadata['winners'].each do |winner| %>
+    <li>
+      <a href="https://github.com/rogerbraun">
+        <img src="http://gravatar.com/avatar/<%= winner['hash'] %>.png?s=200"/></li>
+      </a>
+    </li>
+  <% end %>
+  </ol>
+<% end %>
